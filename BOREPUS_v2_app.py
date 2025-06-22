@@ -49,7 +49,10 @@ st.subheader("🎥 Add YouTube Link (Auto Transcript)")
 yt_link = st.text_input("Paste YouTube URL")
 if st.button("📥 Fetch YouTube Transcript"):
     try:
-        video_id = yt_link.split("v=")[-1].split("&")[0]
+        if "watch?v=" in yt_link:
+            video_id = yt_link.split("watch?v=")[-1].split("&")[0]
+        else:
+            video_id = yt_link.strip()  # fallback: assume it's a raw ID
         transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['ko', 'en'])
         transcript = " ".join([entry['text'] for entry in transcript_list])
         st.session_state.entries.append(f"# Source: YouTube – {yt_link}\n{transcript}\n----------------------")
@@ -72,7 +75,7 @@ if st.button("🌍 Fetch Webpage Text"):
         st.error(f"Could not fetch webpage: {e}")
 
 # Step 3: Review and export
-st.header("3️⃣ Review Your Borepus")
+st.header("3️⃣ Review Your BOREPUS")
 
 if st.session_state.entries:
     for i, entry in enumerate(st.session_state.entries):
@@ -84,6 +87,7 @@ if st.session_state.entries:
         else:
             filename = f"{st.session_state.borepus_name.strip().replace(' ', '_')}.txt"
             full_text = "\n\n".join(st.session_state.entries)
-            st.download_button("⬇️ Download Your BOREPUS", data=full_text, file_name=filename, mime="text/plain")Add commentMore actions
+            st.download_button("⬇️ Download Your BOREPUS", data=full_text, file_name=filename, mime="text/plain")
 else:
     st.info("No entries added yet.")
+
