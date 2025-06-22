@@ -4,16 +4,11 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from bs4 import BeautifulSoup
 import requests
 
-# Sidebar branding (no image to prevent logo crash)
-with st.sidebar:
-    st.markdown("### BOREPUS")
-    st.caption("The Boring Part Made Easy")
-
-st.title("📄 BOREPUS v4.0 – Community Corpus Builder")
+st.title("📄 BOREPUS – The Boring Part Made Easy")
 
 st.markdown("""
 Welcome to **BOREPUS**, your minimalist tool to organize and structure raw texts for educational and linguistic analysis.
-Upload content, cleanly break it with dividers, and optionally share it with the community corpus hub.
+Upload content, cleanly break it with dividers, and download your BORPUS in one file.
 """)
 
 # Upload text file
@@ -38,14 +33,7 @@ if st.button("📥 DOWNLOAD BORPUS"):
         f.write(st.session_state.get("corpus", ""))
     with open("borepus_output.txt", "rb") as f:
         st.download_button("Download your BORPUS", f, "borepus_output.txt")
-
-# Placeholder for future: Save to community corpus
-st.markdown("---")
-if st.checkbox("💾 Save this BORPUS to Community Corpora?"):
-    title = st.text_input("Corpus Title")
-    desc = st.text_area("Short Description")
-    if st.button("Submit to Community"):
-        st.success(f"'{title}' submitted. Community feature coming soon.")
+")
 
 
 
