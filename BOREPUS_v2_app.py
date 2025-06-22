@@ -1,10 +1,21 @@
 import streamlit as st
+import tempfile
+import os
+from youtube_transcript_api import YouTubeTranscriptApi
 import requests
 from bs4 import BeautifulSoup
-from youtube_transcript_api import YouTubeTranscriptApi
 
-# Set page configuration
+# Set page config and background color
 st.set_page_config(page_title="BOREPUS – The Boring Part Made Easy")
+
+# Inject background color (flat orange #F4A942)
+st.markdown("""
+    <style>
+    body {
+        background-color: #F4A942;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # Initialize session state
 if 'entries' not in st.session_state:
@@ -12,21 +23,24 @@ if 'entries' not in st.session_state:
 if 'borepus_name' not in st.session_state:
     st.session_state.borepus_name = ""
 
-# Title
+# Title and branding
+st.image("logo.png", width=150)
 st.title("🧬 BOREPUS")
 st.caption("The Boring Part Made Easy.")
 
-# Step 1: Name your BOREPUS
+# Step 1: Name your Borepus
 st.header("1️⃣ Name Your BOREPUS File")
 st.session_state.borepus_name = st.text_input("Enter your BOREPUS name:")
 
-# Step 2: Add Inputs
+# Step 2: Add content from various input types
 st.header("2️⃣ Add Your Inputs")
-source_label = st.text_input("Optional: Label this source (e.g., Article, Interview)")
 
-# Text Paste
+source_label = st.text_input("Optional: Label this source (e.g., YouTube, Article, Note)")
+
+# Text input
 st.subheader("✍️ Paste or type text")
 user_text = st.text_area("Your text:")
+
 if st.button("📎 Add Text Entry"):
     if user_text.strip():
         st.session_state.entries.append(f"# Source: {source_label}\n{user_text.strip()}\n----------------------")
@@ -34,7 +48,7 @@ if st.button("📎 Add Text Entry"):
     else:
         st.warning("Please enter some text.")
 
-# Upload File
+# File upload
 st.subheader("📄 Upload Text File (.txt)")
 uploaded_file = st.file_uploader("Choose a .txt file", type="txt")
 if uploaded_file:
@@ -42,17 +56,18 @@ if uploaded_file:
     st.session_state.entries.append(f"# Source: {source_label}\n{file_text.strip()}\n----------------------")
     st.success("File content added.")
 
-# YouTube Transcript
+# YouTube transcript
 st.subheader("🎥 Add YouTube Link (Auto Transcript)")
-yt_link = st.text_input("Paste full YouTube URL")
+yt_link = st.text_input("Paste YouTube URL")
 if st.button("📥 Fetch YouTube Transcript"):
     try:
-        if "youtu.be/" in yt_link:
+        # Extract YouTube video ID robustly
+        if "v=" in yt_link:
+            video_id = yt_link.split("v=")[-1].split("&")[0]
+        elif "youtu.be/" in yt_link:
             video_id = yt_link.split("youtu.be/")[-1].split("?")[0]
-        elif "watch?v=" in yt_link:
-            video_id = yt_link.split("watch?v=")[-1].split("&")[0]
         else:
-            raise ValueError("Unrecognized YouTube URL format.")
+            raise ValueError("Invalid YouTube URL format")
 
         transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['ko', 'en'])
         transcript = " ".join([entry['text'] for entry in transcript_list])
@@ -61,7 +76,7 @@ if st.button("📥 Fetch YouTube Transcript"):
     except Exception as e:
         st.error(f"Could not fetch transcript: {e}")
 
-# Webpage Text
+# Webpage scrape
 st.subheader("🌐 Add Webpage URL (Scrape Text)")
 web_url = st.text_input("Paste Webpage URL")
 if st.button("🌍 Fetch Webpage Text"):
@@ -75,8 +90,9 @@ if st.button("🌍 Fetch Webpage Text"):
     except Exception as e:
         st.error(f"Could not fetch webpage: {e}")
 
-# Step 3: Review & Save
-st.header("3️⃣ Review Your BOREPUS")
+# Step 3: Review and export
+st.header("3️⃣ Review Your Borepus")
+
 if st.session_state.entries:
     for i, entry in enumerate(st.session_state.entries):
         st.text(f"[{i+1}]\n{entry}\n")
