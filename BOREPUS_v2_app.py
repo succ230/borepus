@@ -4,9 +4,8 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from bs4 import BeautifulSoup
 import requests
 
-# Logo and branding
+# Sidebar branding (no image to prevent logo crash)
 with st.sidebar:
-    st.image("logo.png", width=150)
     st.markdown("### BOREPUS")
     st.caption("The Boring Part Made Easy")
 
@@ -24,7 +23,8 @@ text_input = st.text_area("Or paste text manually", height=200)
 # Add divider button
 if st.button("LINE ME UP PLEASE"):
     st.session_state.setdefault("corpus", "")
-    st.session_state["corpus"] += (text_input or uploaded_file.read().decode("utf-8")) + "\n" + "-"*80 + "\n"
+    content = text_input or (uploaded_file.read().decode("utf-8") if uploaded_file else "")
+    st.session_state["corpus"] += content + "\n" + "-"*80 + "\n"
     st.success("Text added to BORPUS.")
 
 # Display session corpus
@@ -46,5 +46,6 @@ if st.checkbox("💾 Save this BORPUS to Community Corpora?"):
     desc = st.text_area("Short Description")
     if st.button("Submit to Community"):
         st.success(f"'{title}' submitted. Community feature coming soon.")
+
 
 
