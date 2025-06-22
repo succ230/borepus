@@ -1,21 +1,10 @@
 import streamlit as st
 import tempfile
+import base64
 import os
 from youtube_transcript_api import YouTubeTranscriptApi
 import requests
 from bs4 import BeautifulSoup
-
-# Set page config and background color
-st.set_page_config(page_title="BOREPUS – The Boring Part Made Easy")
-
-# Inject background color (flat orange #F4A942)
-st.markdown("""
-    <style>
-    body {
-        background-color: #F4A942;
-    }
-    </style>
-""", unsafe_allow_html=True)
 
 # Initialize session state
 if 'entries' not in st.session_state:
@@ -23,8 +12,20 @@ if 'entries' not in st.session_state:
 if 'borepus_name' not in st.session_state:
     st.session_state.borepus_name = ""
 
-# Title and branding
-st.image("logo.png", width=150)
+st.set_page_config(page_title="BOREPUS – The Boring Part Made Easy")
+
+# Set light orange background color
+st.markdown(
+    """
+    <style>
+        body, .stApp {
+            background-color: #F4A950;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 st.title("🧬 BOREPUS")
 st.caption("The Boring Part Made Easy.")
 
@@ -61,13 +62,12 @@ st.subheader("🎥 Add YouTube Link (Auto Transcript)")
 yt_link = st.text_input("Paste YouTube URL")
 if st.button("📥 Fetch YouTube Transcript"):
     try:
-        # Extract YouTube video ID robustly
         if "v=" in yt_link:
             video_id = yt_link.split("v=")[-1].split("&")[0]
         elif "youtu.be/" in yt_link:
             video_id = yt_link.split("youtu.be/")[-1].split("?")[0]
         else:
-            raise ValueError("Invalid YouTube URL format")
+            video_id = yt_link.strip()
 
         transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['ko', 'en'])
         transcript = " ".join([entry['text'] for entry in transcript_list])
