@@ -8,6 +8,7 @@ st.title("📄 BOREPUS – The Boring Part Made Easy")
 
 st.markdown("""
 Welcome to **BOREPUS**, your minimalist tool to organize and structure raw texts for educational and linguistic analysis.
+
 Upload content, cleanly break it with dividers, and download your BORPUS in one file.
 """)
 
@@ -33,7 +34,3 @@ if st.button("📥 DOWNLOAD BORPUS"):
         f.write(st.session_state.get("corpus", ""))
     with open("borepus_output.txt", "rb") as f:
         st.download_button("Download your BORPUS", f, "borepus_output.txt")
-")
-
-
-
