@@ -35,17 +35,22 @@ st.markdown("""
     .block-container {
         padding-top: 2rem;
     }
+    .centered-logo {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# Load Logo
+# Load and display logo
 try:
     logo = Image.open("logo.png")
-    st.image(logo, width=180)
+    st.markdown('<div class="centered-logo">', unsafe_allow_html=True)
+    st.image(logo, width=220)
+    st.markdown('</div>', unsafe_allow_html=True)
 except:
     st.warning("⚠️ Logo not found or failed to load.")
-
-st.markdown("<h4 style='text-align: center;'>The Boring Part Made Easy</h4>", unsafe_allow_html=True)
 
 # Session State
 if 'entries' not in st.session_state:
@@ -124,3 +129,4 @@ if st.session_state.entries:
             st.download_button("⬇️ Download Your BOREPUS", data=full_text, file_name=filename, mime="text/plain")
 else:
     st.info("No entries added yet.")
+
