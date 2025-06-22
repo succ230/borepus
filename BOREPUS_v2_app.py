@@ -3,10 +3,12 @@ import tempfile
 from youtube_transcript_api import YouTubeTranscriptApi
 import requests
 from bs4 import BeautifulSoup
+from PIL import Image
 
-# --- PAGE SETUP + STYLE ---
+# Page Setup
 st.set_page_config(page_title="BOREPUS – The Boring Part Made Easy")
 
+# Inject Custom CSS
 st.markdown("""
     <style>
     body, .stApp {
@@ -22,44 +24,45 @@ st.markdown("""
         background-color: #DFF2FF !important;
         color: black !important;
         font-weight: bold !important;
+        border: 1px solid black;
     }
-    button[kind="primary"] {
-        background-color: #DFF2FF !important;
+    button {
+        background-color: #D2F0C2 !important;
         color: black !important;
         font-weight: bold !important;
-        border: 1px solid black;
+        border: 1px solid black !important;
     }
     .block-container {
         padding-top: 2rem;
     }
-    .logo-container {
-        text-align: center;
-        margin-bottom: 10px;
-    }
     </style>
-    <div class="logo-container">
-        <img src="logo.png" width="180">
-        <p style="margin-top: 0.5rem; font-size: 16px;">The Boring Part Made Easy</p>
-    </div>
 """, unsafe_allow_html=True)
 
-# --- SESSION STATE ---
+# Load Logo
+try:
+    logo = Image.open("logo.png")
+    st.image(logo, width=180)
+except:
+    st.warning("⚠️ Logo not found or failed to load.")
+
+st.markdown("<h4 style='text-align: center;'>The Boring Part Made Easy</h4>", unsafe_allow_html=True)
+
+# Session State
 if 'entries' not in st.session_state:
     st.session_state.entries = []
 if 'borepus_name' not in st.session_state:
     st.session_state.borepus_name = ""
 
-# --- SECTION 1: Name File ---
+# Step 1 – Name File
 st.header("1️⃣ Name Your BOREPUS File")
 st.session_state.borepus_name = st.text_input("Enter your BOREPUS name:")
 
-# --- SECTION 2: Input Text ---
+# Step 2 – Inputs
 st.header("2️⃣ Add Your Inputs")
 source_label = st.text_input("Optional: Label this source (e.g., YouTube, Article, Note)")
 
 st.subheader("✍️ Paste or type text")
 user_text = st.text_area("Your text:")
-
 if st.button("📎 Add Text Entry"):
     if user_text.strip():
         st.session_state.entries.append(f"# Source: {source_label}\n{user_text.strip()}\n----------------------")
@@ -67,7 +70,7 @@ if st.button("📎 Add Text Entry"):
     else:
         st.warning("Please enter some text.")
 
-# --- SECTION 3: Upload File ---
+# Upload File
 st.subheader("📄 Upload Text File (.txt)")
 uploaded_file = st.file_uploader("Choose a .txt file", type="txt")
 if uploaded_file:
@@ -75,13 +78,11 @@ if uploaded_file:
     st.session_state.entries.append(f"# Source: {source_label}\n{file_text.strip()}\n----------------------")
     st.success("File content added.")
 
-# --- SECTION 4: YouTube Transcript ---
+# YouTube
 st.subheader("🎥 Add YouTube Link (Auto Transcript)")
 yt_link = st.text_input("Paste YouTube URL")
-
 if st.button("📥 Fetch YouTube Transcript"):
     try:
-        # Extract ID from full link
         if "v=" in yt_link:
             video_id = yt_link.split("v=")[-1].split("&")[0]
         elif "youtu.be/" in yt_link:
@@ -95,7 +96,7 @@ if st.button("📥 Fetch YouTube Transcript"):
     except Exception as e:
         st.error(f"Could not fetch transcript: {e}")
 
-# --- SECTION 5: Web Scrape ---
+# Webpage
 st.subheader("🌐 Add Webpage URL (Scrape Text)")
 web_url = st.text_input("Paste Webpage URL")
 if st.button("🌍 Fetch Webpage Text"):
@@ -109,12 +110,11 @@ if st.button("🌍 Fetch Webpage Text"):
     except Exception as e:
         st.error(f"Could not fetch webpage: {e}")
 
-# --- SECTION 6: Review + Download ---
+# Step 3 – Review & Save
 st.header("3️⃣ Review Your BOREPUS")
 if st.session_state.entries:
     for i, entry in enumerate(st.session_state.entries):
         st.text(f"[{i+1}]\n{entry}\n")
-
     if st.button("💾 SAVE BOREPUS"):
         if not st.session_state.borepus_name.strip():
             st.error("Please name your BOREPUS first.")
@@ -124,5 +124,3 @@ if st.session_state.entries:
             st.download_button("⬇️ Download Your BOREPUS", data=full_text, file_name=filename, mime="text/plain")
 else:
     st.info("No entries added yet.")
-
-
