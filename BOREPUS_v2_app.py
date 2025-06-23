@@ -35,7 +35,7 @@ st.markdown("""
         border: 1px solid black !important;
     }
     .block-container {
-        padding-top: 2rem;
+        padding-top: 1rem;
     }
     .centered-logo {
         text-align: center;
@@ -44,7 +44,7 @@ st.markdown("""
     .centered-logo img {
         margin: 0 auto;
         display: block;
-        width: 240px;
+        width: 200px;
     }
     .left-text {
         text-align: left;
@@ -57,13 +57,13 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Load and display logo with left-aligned Purpose, Built By, and Quote
+# Load and display logo with left-aligned Purpose and Built By lines
 try:
     logo = Image.open("logo.png")
     st.markdown('<div class="centered-logo">', unsafe_allow_html=True)
     st.image(logo)
     st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown('<div class="left-text">Purpose: Built for ease of corpus creation.<br>Built by: Eden De La Cruz (Linguist and System Designer)<br><br><em>Systems built on optimized language — only work for those who built them. That\'s not justice. That\'s power by design.</em></div>', unsafe_allow_html=True)
+    st.markdown('<div class="left-text">Purpose: Built for ease of corpus creation.<br>Built by: Eden De La Cruz (Linguist and System Designer)</div>', unsafe_allow_html=True)
 except:
     st.warning("⚠️ Logo not found or failed to load.")
 
@@ -126,33 +126,4 @@ if st.button("🌍 Fetch Webpage Text"):
         soup = BeautifulSoup(response.text, 'html.parser')
         paragraphs = soup.find_all('p')
         content = "\n".join(p.get_text() for p in paragraphs if len(p.get_text().strip()) > 30)
-        st.session_state.entries.append(f"# Source: Web – {web_url}\n# Source Note: {source_note}\n{content.strip()}\n----------------------")
-        st.success("Web content added.")
-    except Exception as e:
-        st.error(f"Could not fetch webpage: {e}")
-
-# Step 3 – Review & Save
-st.header("3️⃣ Review Your BOREPUS")
-if st.session_state.entries:
-    for i, entry in enumerate(st.session_state.entries):
-        st.text(f"[{i+1}]\n{entry}\n")
-
-    file_format = st.radio("Save format:", ["Text (.txt)", "ZIP (.zip)"])
-
-    if st.button("💾 SAVE BOREPUS"):
-        if not st.session_state.borepus_name.strip():
-            st.error("Please name your BOREPUS first.")
-        else:
-            filename_base = st.session_state.borepus_name.strip().replace(' ', '_')
-            full_text = "\n\n".join(st.session_state.entries)
-
-            if file_format == "Text (.txt)":
-                st.download_button("⬇️ Download Your BOREPUS (.txt)", data=full_text, file_name=f"{filename_base}.txt", mime="text/plain")
-            else:
-                zip_buffer = io.BytesIO()
-                with zipfile.ZipFile(zip_buffer, "w") as zip_file:
-                    zip_file.writestr(f"{filename_base}.txt", full_text)
-                zip_buffer.seek(0)
-                st.download_button("⬇️ Download Your BOREPUS (.zip)", data=zip_buffer, file_name=f"{filename_base}.zip", mime="application/zip")
-else:
-    st.info("No entries added yet.")
+        st.session_state.entries.append(f"# Source: Web – {web_url}\n# Source Note: {source_n_
