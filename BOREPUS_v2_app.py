@@ -44,14 +44,14 @@ st.markdown("""
     .centered-logo img {
         margin: 0 auto;
         display: block;
-        width: 110px;
+        width: 130px;
     }
     .left-text {
         text-align: left;
-        font-weight: 700;
-        margin-top: 1rem;
-        margin-bottom: 1.5rem;
-        font-size: 1.1rem;
+        font-weight: 800;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 1.3rem;
     }
     h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
         display: none !important;
