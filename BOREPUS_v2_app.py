@@ -27,7 +27,7 @@ st.markdown("""
         border: 1px solid black;
     }
     button {
-        background-color: #D2F0C2 !important;
+        background-color: #5DAE5D !important;
         color: black !important;
         font-weight: bold !important;
         border: 1px solid black !important;
@@ -38,6 +38,7 @@ st.markdown("""
     .centered-logo {
         display: flex;
         justify-content: center;
+        align-items: center;
         margin-bottom: 1rem;
     }
     </style>
@@ -47,7 +48,7 @@ st.markdown("""
 try:
     logo = Image.open("logo.png")
     st.markdown('<div class="centered-logo">', unsafe_allow_html=True)
-    st.image(logo, width=220)
+    st.image(logo, width=300)
     st.markdown('</div>', unsafe_allow_html=True)
 except:
     st.warning("⚠️ Logo not found or failed to load.")
@@ -66,7 +67,7 @@ st.session_state.borepus_name = st.text_input("Enter your BOREPUS name:")
 st.header("2️⃣ Add Your Inputs")
 source_label = st.text_input("Optional: Label this source (e.g., YouTube, Article, Note)")
 
-st.subheader("✍️ Paste or type text")
+st.subheader("📝 Paste or type text")
 user_text = st.text_area("Your text:")
 if st.button("📎 Add Text Entry"):
     if user_text.strip():
@@ -84,7 +85,7 @@ if uploaded_file:
     st.success("File content added.")
 
 # YouTube
-st.subheader("🎥 Add YouTube Link (Auto Transcript)")
+st.subheader("🎬 Add YouTube Link (Auto Transcript)")
 yt_link = st.text_input("Paste YouTube URL")
 if st.button("📥 Fetch YouTube Transcript"):
     try:
@@ -129,4 +130,5 @@ if st.session_state.entries:
             st.download_button("⬇️ Download Your BOREPUS", data=full_text, file_name=filename, mime="text/plain")
 else:
     st.info("No entries added yet.")
+
 
