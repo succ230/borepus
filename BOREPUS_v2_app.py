@@ -35,7 +35,7 @@ st.markdown("""
         border: 1px solid black !important;
     }
     .block-container {
-        padding-top: 0.5rem;
+        padding-top: 0.3rem;
     }
     .centered-logo {
         text-align: center;
