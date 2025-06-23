@@ -44,7 +44,7 @@ st.markdown("""
     .centered-logo img {
         margin: 0 auto;
         display: block;
-        width: 110px;
+        width: 105px;
     }
     .left-text {
         text-align: left;
