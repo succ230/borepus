@@ -39,12 +39,17 @@ st.markdown("""
     }
     .centered-logo {
         text-align: center;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
     }
     .centered-logo img {
         margin: 0 auto;
         display: block;
         width: 300px;
+    }
+    .info-text {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
     }
     h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
         display: none !important;
@@ -52,12 +57,13 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Load and display logo
+# Load and display logo with Purpose and Built By lines
 try:
     logo = Image.open("logo.png")
     st.markdown('<div class="centered-logo">', unsafe_allow_html=True)
     st.image(logo)
     st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('<div class="info-text">Purpose: Built for ease of corpus creation.<br>Built by: Eden De La Cruz (Linguist and System Designer)</div>', unsafe_allow_html=True)
 except:
     st.warning("⚠️ Logo not found or failed to load.")
 
@@ -74,12 +80,13 @@ st.session_state.borepus_name = st.text_input("Enter your BOREPUS name:")
 # Step 2 – Inputs
 st.header("2️⃣ Add Your Inputs")
 source_label = st.text_input("Optional: Label this source (e.g., YouTube, Article, Note)")
+source_note = st.text_input("Optional Source Note (e.g., Link, video title, topic)")
 
 st.subheader("📝 Paste or type text")
 user_text = st.text_area("Your text:")
 if st.button("📎 Add Text Entry"):
     if user_text.strip():
-        st.session_state.entries.append(f"# Source: {source_label}\n{user_text.strip()}\n----------------------")
+        st.session_state.entries.append(f"# Source: {source_label}\n# Source Note: {source_note}\n{user_text.strip()}\n----------------------")
         st.success("Text added.")
     else:
         st.warning("Please enter some text.")
@@ -89,7 +96,7 @@ st.subheader("📄 Upload Text File (.txt)")
 uploaded_file = st.file_uploader("Choose a .txt file", type="txt")
 if uploaded_file:
     file_text = uploaded_file.read().decode("utf-8")
-    st.session_state.entries.append(f"# Source: {source_label}\n{file_text.strip()}\n----------------------")
+    st.session_state.entries.append(f"# Source: {source_label}\n# Source Note: {source_note}\n{file_text.strip()}\n----------------------")
     st.success("File content added.")
 
 # YouTube
@@ -105,7 +112,7 @@ if st.button("📥 Fetch YouTube Transcript"):
             video_id = yt_link
         transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['ko', 'en'])
         transcript = " ".join([entry['text'] for entry in transcript_list])
-        st.session_state.entries.append(f"# Source: YouTube – {yt_link}\n{transcript}\n----------------------")
+        st.session_state.entries.append(f"# Source: YouTube – {yt_link}\n# Source Note: {source_note}\n{transcript}\n----------------------")
         st.success("Transcript added.")
     except Exception as e:
         st.error(f"Could not fetch transcript: {e}")
@@ -119,7 +126,7 @@ if st.button("🌍 Fetch Webpage Text"):
         soup = BeautifulSoup(response.text, 'html.parser')
         paragraphs = soup.find_all('p')
         content = "\n".join(p.get_text() for p in paragraphs if len(p.get_text().strip()) > 30)
-        st.session_state.entries.append(f"# Source: Web – {web_url}\n{content.strip()}\n----------------------")
+        st.session_state.entries.append(f"# Source: Web – {web_url}\n# Source Note: {source_note}\n{content.strip()}\n----------------------")
         st.success("Web content added.")
     except Exception as e:
         st.error(f"Could not fetch webpage: {e}")
@@ -149,4 +156,5 @@ if st.session_state.entries:
                 st.download_button("⬇️ Download Your BOREPUS (.zip)", data=zip_buffer, file_name=f"{filename_base}.zip", mime="application/zip")
 else:
     st.info("No entries added yet.")
+
 
