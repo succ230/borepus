@@ -4,6 +4,8 @@ from youtube_transcript_api import YouTubeTranscriptApi
 import requests
 from bs4 import BeautifulSoup
 from PIL import Image
+import zipfile
+import io
 
 # Page Setup
 st.set_page_config(page_title="BOREPUS – The Boring Part Made Easy")
@@ -44,7 +46,6 @@ st.markdown("""
         display: block;
         width: 300px;
     }
-    /* Hide Streamlit anchor link icons from headers */
     h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
         display: none !important;
     }
@@ -128,13 +129,24 @@ st.header("3️⃣ Review Your BOREPUS")
 if st.session_state.entries:
     for i, entry in enumerate(st.session_state.entries):
         st.text(f"[{i+1}]\n{entry}\n")
+
+    file_format = st.radio("Save format:", ["Text (.txt)", "ZIP (.zip)"])
+
     if st.button("💾 SAVE BOREPUS"):
         if not st.session_state.borepus_name.strip():
             st.error("Please name your BOREPUS first.")
         else:
-            filename = f"{st.session_state.borepus_name.strip().replace(' ', '_')}.txt"
+            filename_base = st.session_state.borepus_name.strip().replace(' ', '_')
             full_text = "\n\n".join(st.session_state.entries)
-            st.download_button("⬇️ Download Your BOREPUS", data=full_text, file_name=filename, mime="text/plain")
+
+            if file_format == "Text (.txt)":
+                st.download_button("⬇️ Download Your BOREPUS (.txt)", data=full_text, file_name=f"{filename_base}.txt", mime="text/plain")
+            else:
+                zip_buffer = io.BytesIO()
+                with zipfile.ZipFile(zip_buffer, "w") as zip_file:
+                    zip_file.writestr(f"{filename_base}.txt", full_text)
+                zip_buffer.seek(0)
+                st.download_button("⬇️ Download Your BOREPUS (.zip)", data=zip_buffer, file_name=f"{filename_base}.zip", mime="application/zip")
 else:
     st.info("No entries added yet.")
 
