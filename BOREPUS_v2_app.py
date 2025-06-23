@@ -44,10 +44,10 @@ st.markdown("""
     .centered-logo img {
         margin: 0 auto;
         display: block;
-        width: 300px;
+        width: 240px;
     }
-    .info-text {
-        text-align: center;
+    .left-text {
+        text-align: left;
         font-weight: bold;
         margin-bottom: 1.5rem;
     }
@@ -57,13 +57,13 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Load and display logo with Purpose and Built By lines
+# Load and display logo with left-aligned Purpose, Built By, and Quote
 try:
     logo = Image.open("logo.png")
     st.markdown('<div class="centered-logo">', unsafe_allow_html=True)
     st.image(logo)
     st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown('<div class="info-text">Purpose: Built for ease of corpus creation.<br>Built by: Eden De La Cruz (Linguist and System Designer)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="left-text">Purpose: Built for ease of corpus creation.<br>Built by: Eden De La Cruz (Linguist and System Designer)<br><br><em>Systems built on optimized language — only work for those who built them. That\'s not justice. That\'s power by design.</em></div>', unsafe_allow_html=True)
 except:
     st.warning("⚠️ Logo not found or failed to load.")
 
@@ -156,4 +156,3 @@ if st.session_state.entries:
                 st.download_button("⬇️ Download Your BOREPUS (.zip)", data=zip_buffer, file_name=f"{filename_base}.zip", mime="application/zip")
 else:
     st.info("No entries added yet.")
-
