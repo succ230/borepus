@@ -35,7 +35,7 @@ st.markdown("""
         border: 1px solid black !important;
     }
     .block-container {
-        padding-top: 0.3rem;
+        padding-top: 0.5rem;
     }
     .centered-logo {
         text-align: center;
@@ -44,12 +44,14 @@ st.markdown("""
     .centered-logo img {
         margin: 0 auto;
         display: block;
-        width: 105px;
+        width: 110px;
     }
     .left-text {
         text-align: left;
-        font-weight: bold;
+        font-weight: 700;
+        margin-top: 1rem;
         margin-bottom: 1.5rem;
+        font-size: 1.1rem;
     }
     h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
         display: none !important;
@@ -156,4 +158,3 @@ if st.session_state.entries:
                 st.download_button("⬇️ Download Your BOREPUS (.zip)", data=zip_buffer, file_name=f"{filename_base}.zip", mime="application/zip")
 else:
     st.info("No entries added yet.")
-
