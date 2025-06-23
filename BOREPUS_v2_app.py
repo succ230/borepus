@@ -126,4 +126,33 @@ if st.button("🌍 Fetch Webpage Text"):
         soup = BeautifulSoup(response.text, 'html.parser')
         paragraphs = soup.find_all('p')
         content = "\n".join(p.get_text() for p in paragraphs if len(p.get_text().strip()) > 30)
-        st.session_state.entries.append(f"# Source: Web – {web_url}\n# Source Note: {source_n_
+        st.session_state.entries.append(f"# Source: Web – {web_url}\n# Source Note: {source_note}\n{content.strip()}\n----------------------")
+        st.success("Web content added.")
+    except Exception as e:
+        st.error(f"Could not fetch webpage: {e}")
+
+# Step 3 – Review & Save
+st.header("3️⃣ Review Your BOREPUS")
+if st.session_state.entries:
+    for i, entry in enumerate(st.session_state.entries):
+        st.text(f"[{i+1}]\n{entry}\n")
+
+    file_format = st.radio("Save format:", ["Text (.txt)", "ZIP (.zip)"])
+
+    if st.button("💾 SAVE BOREPUS"):
+        if not st.session_state.borepus_name.strip():
+            st.error("Please name your BOREPUS first.")
+        else:
+            filename_base = st.session_state.borepus_name.strip().replace(' ', '_')
+            full_text = "\n\n".join(st.session_state.entries)
+
+            if file_format == "Text (.txt)":
+                st.download_button("⬇️ Download Your BOREPUS (.txt)", data=full_text, file_name=f"{filename_base}.txt", mime="text/plain")
+            else:
+                zip_buffer = io.BytesIO()
+                with zipfile.ZipFile(zip_buffer, "w") as zip_file:
+                    zip_file.writestr(f"{filename_base}.txt", full_text)
+                zip_buffer.seek(0)
+                st.download_button("⬇️ Download Your BOREPUS (.zip)", data=zip_buffer, file_name=f"{filename_base}.zip", mime="application/zip")
+else:
+    st.info("No entries added yet.")
