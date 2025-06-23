@@ -44,7 +44,7 @@ st.markdown("""
     .centered-logo img {
         margin: 0 auto;
         display: block;
-        width: 170px;
+        width: 150px;
     }
     .left-text {
         text-align: left;
@@ -156,5 +156,4 @@ if st.session_state.entries:
                 st.download_button("⬇️ Download Your BOREPUS (.zip)", data=zip_buffer, file_name=f"{filename_base}.zip", mime="application/zip")
 else:
     st.info("No entries added yet.")
-
 
